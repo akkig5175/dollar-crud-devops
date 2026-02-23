@@ -28,7 +28,7 @@ pipeline {
 
         stage('Push Images to DockerHub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_cred', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                     sh """
                         docker login -u $USER -p $PASS
                         docker push $DOCKER_USER/dollar-backend:$IMAGE_TAG
@@ -42,7 +42,7 @@ pipeline {
             steps {
                 sshagent(['server-ssh']) {
                     sh """
-                    ssh ubuntu@HOST_VM_IP '
+                    ssh ubuntu@HOST_IP'
                         cd mean-app &&
                         export IMAGE_TAG=$IMAGE_TAG &&
                         docker-compose pull &&
