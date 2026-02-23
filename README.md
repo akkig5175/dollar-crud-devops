@@ -1,27 +1,96 @@
-In this DevOps task, you need to build and deploy a full-stack CRUD application using the MEAN stack (MongoDB, Express, Angular 15, and Node.js). The backend will be developed with Node.js and Express to provide REST APIs, connecting to a MongoDB database. The frontend will be an Angular application utilizing HTTPClient for communication.  
+MEAN Stack CI/CD Deployment using Docker, Jenkins & AWS
 
-The application will manage a collection of tutorials, where each tutorial includes an ID, title, description, and published status. Users will be able to create, retrieve, update, and delete tutorials. Additionally, a search box will allow users to find tutorials by title.
+This project demonstrates end-to-end containerization and deployment of a full-stack MEAN application using Docker, Docker Compose, Jenkins CI/CD, and AWS virtual machines.
 
-## Project setup
+The setup automates build, push, and deployment processes using Jenkins pipelines and Docker Hub.
 
-### Node.js Server
+## Project Structure
 
-cd backend
+```
+mean-app/
+├── backend/          # Node.js + Express API
+├── frontend/         # Angular 15 Client
+├── docker-compose.yml  # Multi-container setup
+├── Dockerfile        # Docker build configurations
+└── Jenkinsfile       # CI/CD pipeline definition
+```
 
-npm install
+## Prerequisites
 
-You can update the MongoDB credentials by modifying the `db.config.js` file located in `app/config/`.
+- Docker & Docker Compose installed
+- Jenkins server running (in vm)
+- AWS account with EC2 instance
+- Docker Hub account
 
-Run `node server.js`
+## Setup
 
-### Angular Client
+### 1. Build Docker Images
 
-cd frontend
+```bash
+# Build backend image
+docker build -t akkig5175/dollar-backend:latest ./backend
 
-npm install
+# Build frontend image
+docker build -t akkig5175/dollar-frontend:latest ./frontend
+```
 
-Run `ng serve --port 8081`
+### 2. Push to Docker Hub
 
-You can modify the `src/app/services/tutorial.service.ts` file to adjust how the frontend interacts with the backend.
+```bash
+docker push akkig5175/dollar-backend:latest
+docker push akkig5175/dollar-frontend:latest
+```
 
-Navigate to `http://localhost:8081/`
+### 3. Deploy to AWS
+
+Ensure `docker-compose.yml` points to your Docker Hub images:
+
+```yaml
+services:
+  backend:
+    image: akkig5175/dollar-backend:latest
+
+  frontend:
+    image: akkig5175/dollar-frontend:latest
+```
+
+Run on your AWS EC2 instance:
+
+```bash
+cd mean-app
+docker-compose up -d
+```
+
+## Jenkins Pipeline
+
+The Jenkinsfile automates the following:
+
+1. Clone repository
+2. Build Docker images
+3. Push to Docker Hub
+4. Deploy to AWS via SSH
+
+### Credentials Setup in Jenkins
+
+- `dockerhub_cred`: Docker Hub username/password
+- `HOST_IP`: AWS EC2 IP address
+- `server-ssh`: SSH private key for AWS access
+
+## Application Details
+
+### Backend
+- Node.js + Express REST API
+- MongoDB integration
+- CRUD operations for tutorials
+
+### Frontend
+- Angular 15 client
+- HTTPClient for API communication
+- Search functionality
+
+## Access Application
+
+Open `http://<AWS_IP>` in your browser.
+
+##Screenshots
+
