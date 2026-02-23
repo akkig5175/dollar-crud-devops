@@ -3,7 +3,8 @@ pipeline {
 
     environment {
         DOCKER_USER = "akki5175"
-        IMAGE_TAG = "${BUILD_NUMBER}"
+        // IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_TAG = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
     }
 
     stages {
