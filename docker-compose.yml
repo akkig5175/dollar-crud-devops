@@ -12,7 +12,7 @@ services:
       - mongo_data:/data/db
 
   backend:
-    image: akkig5175/dollar-backend:${IMAGE_TAG}
+    image: akki5175/dollar-backend:${IMAGE_TAG}
     container_name: backend
     restart: always
     ports:
@@ -23,7 +23,7 @@ services:
       - mongo
 
   frontend:
-    image: akkig5175/dollar-frontend:${IMAGE_TAG}
+    image: akki5175/dollar-frontend:${IMAGE_TAG}
     container_name: frontend
     restart: always
     ports:
