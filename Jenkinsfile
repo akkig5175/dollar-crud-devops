@@ -13,16 +13,16 @@ pipeline {
             }
         }
 
-        stage('Set Image Tag') {
-            steps {
-                script {
-                    IMAGE_TAG = sh(
-                        script: "git rev-parse --short HEAD",
-                        returnStdout: true
-                    ).trim()
-                }
-            }
-        }
+        // stage('Set Image Tag') {
+        //     steps {
+        //         script {
+        //             IMAGE_TAG = sh(
+        //                 script: "git rev-parse --short HEAD",
+        //                 returnStdout: true
+        //             ).trim()
+        //         }
+        //     }
+        // }
 
         stage('Build Backend Image') {
             steps {
