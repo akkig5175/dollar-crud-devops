@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_USER = "akki5175"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -12,17 +13,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/akkig5175/dollar-crud-devops.git'
             }
         }
-
-        // stage('Set Image Tag') {
-        //     steps {
-        //         script {
-        //             IMAGE_TAG = sh(
-        //                 script: "git rev-parse --short HEAD",
-        //                 returnStdout: true
-        //             ).trim()
-        //         }
-        //     }
-        // }
 
         stage('Build Backend Image') {
             steps {
@@ -39,11 +29,7 @@ pipeline {
         stage('Push Images to DockerHub') {
             steps {
                 withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub_cred',
-                        usernameVariable: 'USER',
-                        passwordVariable: 'PASS'
-                    )
+                    usernamePassword(credentialsId: 'dockerhub_cred', usernameVariable: 'USER', passwordVariable: 'PASS')
                 ]) {
                     sh """
                         echo \$PASS | docker login -u \$USER --password-stdin
@@ -61,7 +47,7 @@ pipeline {
                     sshUserPrivateKey(credentialsId: 'server-ssh', keyFileVariable: 'SSH_KEY')
                 ]) {
                     sh """
-                        ssh -i \$SSH_KEY ubuntu@\$HOST '
+                        ssh -o StrictHostKeyChecking=no -i \$SSH_KEY ubuntu@\$HOST '
                             cd mean-app &&
                             export IMAGE_TAG=$IMAGE_TAG &&
                             docker-compose pull &&
